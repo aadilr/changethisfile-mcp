@@ -30,8 +30,16 @@ const SERVER_VERSION = '1.0.0';
 const TOOLS = [
   {
     name: 'convert_file',
+    title: 'Convert File',
     description:
       'Convert a file from one format to another. Pass either a publicly accessible URL (source_url) or base64-encoded file contents (base64_content). Returns a temporary download URL valid for 24 hours.',
+    annotations: {
+      title: 'Convert File',
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
+    },
     inputSchema: {
       type: 'object',
       properties: {
@@ -61,8 +69,14 @@ const TOOLS = [
   },
   {
     name: 'list_conversions',
+    title: 'List Supported Conversions',
     description:
       'List all supported conversion routes. Optionally filter by source format to see what you can convert FROM a specific format.',
+    annotations: {
+      title: 'List Supported Conversions',
+      readOnlyHint: true,
+      openWorldHint: false,
+    },
     inputSchema: {
       type: 'object',
       properties: {
