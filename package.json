@@ -1,0 +1,35 @@
+{
+  "name": "changethisfile-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for ChangeThisFile — free file conversion between 690+ formats (image, video, audio, document, data, font, ebook, archive). No auth required.",
+  "type": "module",
+  "bin": {
+    "changethisfile-mcp": "index.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "file-conversion",
+    "converter",
+    "ffmpeg",
+    "pdf",
+    "changethisfile"
+  ],
+  "author": "Aadil Razvi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aadilr/changethisfile-mcp.git"
+  },
+  "homepage": "https://changethisfile.com",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  }
+}
