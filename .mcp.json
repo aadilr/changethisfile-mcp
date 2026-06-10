@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "changethisfile": {
+      "type": "http",
+      "url": "https://changethisfile.com/mcp"
+    }
+  }
+}

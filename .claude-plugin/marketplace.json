@@ -1,0 +1,15 @@
+{
+  "name": "changethisfile",
+  "description": "Free file conversion for Claude — 999 routes across images, video, audio, documents, data, fonts, ebooks, and archives. No API key.",
+  "owner": {
+    "name": "Aadil Razvi",
+    "url": "https://changethisfile.com"
+  },
+  "plugins": [
+    {
+      "name": "changethisfile",
+      "source": "./",
+      "description": "Convert files between 999 conversion routes from Claude — free, no API key. Hosted MCP server + file-conversion skill."
+    }
+  ]
+}

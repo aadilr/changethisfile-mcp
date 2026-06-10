@@ -56,7 +56,26 @@ npm install
 node index.js
 ```
 
-## Option 3 — Docker
+## Option 3 — Agent Skill / Claude Code plugin
+
+This repo doubles as an [Agent Skill](https://agentskills.io) and Claude Code plugin.
+
+**Any skills-capable agent** (Claude Code, Codex CLI, Cursor, Gemini CLI, Copilot, and more):
+
+```bash
+npx skills add aadilr/changethisfile-mcp
+```
+
+**Claude Code plugin** (bundles the MCP server + the skill):
+
+```
+/plugin marketplace add aadilr/changethisfile-mcp
+/plugin install changethisfile@changethisfile
+```
+
+The `file-conversion` skill prefers the MCP tools when connected and otherwise falls back to a bundled script (`skills/file-conversion/scripts/convert.sh`) that talks to the hosted endpoint over plain HTTPS — no MCP client required.
+
+## Option 4 — Docker
 
 ```bash
 docker build -t changethisfile-mcp .

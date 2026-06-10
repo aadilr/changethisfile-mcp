@@ -1,0 +1,13 @@
+{
+  "name": "changethisfile",
+  "description": "Convert files between 999 conversion routes — PDF↔Word, HEIC→JPG, MP4→MP3, CSV→JSON, EPUB→MOBI and more. Free, no API key. Bundles the hosted ChangeThisFile MCP server and a file-conversion skill with a script fallback for environments without MCP.",
+  "version": "1.2.0",
+  "author": {
+    "name": "Aadil Razvi",
+    "url": "https://changethisfile.com"
+  },
+  "homepage": "https://changethisfile.com/docs/mcp",
+  "repository": "https://github.com/aadilr/changethisfile-mcp",
+  "license": "MIT",
+  "keywords": ["file-conversion", "converter", "pdf", "ffmpeg", "mcp", "skill"]
+}
