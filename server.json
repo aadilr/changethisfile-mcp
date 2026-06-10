@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.changethisfile/mcp",
+  "title": "ChangeThisFile",
+  "description": "Convert files between 690+ formats: image, video, audio, documents, ebooks, archives. Free, no auth.",
+  "version": "1.1.0",
+  "websiteUrl": "https://changethisfile.com",
+  "repository": {
+    "url": "https://github.com/aadilr/changethisfile-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://changethisfile.com/mcp"
+    }
+  ]
+}
