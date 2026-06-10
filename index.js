@@ -32,7 +32,7 @@ const TOOLS = [
     name: 'convert_file',
     title: 'Convert File',
     description:
-      'Convert a file from one format to another. Pass either a publicly accessible URL (source_url) or base64-encoded file contents (base64_content). Returns a temporary download URL valid for 24 hours.',
+      'Convert a file from one format to another. Pass EITHER a publicly accessible URL (source_url) OR base64-encoded file contents (base64_content + source_format) — exactly one is required. Returns a temporary download URL (valid 1 hour; file deleted within 24 hours).',
     annotations: {
       title: 'Convert File',
       readOnlyHint: false,
