@@ -1,7 +1,7 @@
 {
   "name": "changethisfile-mcp",
-  "version": "1.0.0",
-  "description": "MCP server for ChangeThisFile — free file conversion between 690+ formats (image, video, audio, document, data, font, ebook, archive). No auth required.",
+  "version": "1.0.1",
+  "description": "MCP server for ChangeThisFile \u2014 free file conversion between 690+ formats (image, video, audio, document, data, font, ebook, archive). No auth required.",
   "type": "module",
   "bin": {
     "changethisfile-mcp": "index.js"

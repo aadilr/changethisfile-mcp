@@ -1,157 +1,102 @@
 #!/usr/bin/env node
 /**
- * ChangeThisFile MCP Server (stdio)
+ * changethisfile-mcp — stdio shim
  *
- * Convert files between 690+ formats — image, video, audio, document, data,
- * font, ebook, and archive. Free, no auth required.
+ * Bridges stdio-based MCP clients (Claude Desktop, Cursor, etc.) to the
+ * remote ChangeThisFile MCP server at https://changethisfile.com/mcp
+ * using the MCP streamable-HTTP transport (spec 2025-03-26).
  *
- * This is a thin stdio client for the hosted ChangeThisFile MCP endpoint
- * (https://changethisfile.com/mcp, streamable HTTP). Tool discovery is
- * answered locally; tool calls are forwarded to the hosted service, which
- * runs the actual conversion engines (FFmpeg, LibreOffice, Calibre, 7-Zip,
- * sharp, fonttools, Ghostscript, and more) and returns a signed download URL.
+ * Usage in claude_desktop_config.json:
+ *   {
+ *     "mcpServers": {
+ *       "changethisfile": {
+ *         "command": "npx",
+ *         "args": ["-y", "changethisfile-mcp"]
+ *       }
+ *     }
+ *   }
  *
- * If your MCP client supports streamable HTTP transport, you can skip this
- * package entirely and connect directly to https://changethisfile.com/mcp.
+ * The shim reads JSON-RPC messages from stdin and forwards them as POST
+ * requests to the remote endpoint, writing responses back to stdout.
+ * No authentication is required for list_conversions; convert_file uses
+ * the server's built-in free-tier key.
  */
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  ListToolsRequestSchema,
-  CallToolRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+const REMOTE_URL = process.env.CTF_MCP_URL || 'https://changethisfile.com/mcp';
+const DEBUG = process.env.CTF_MCP_DEBUG === '1';
 
-const ENDPOINT = process.env.CHANGETHISFILE_MCP_URL || 'https://changethisfile.com/mcp';
-const SERVER_VERSION = '1.0.0';
-
-// Tool definitions mirror the hosted server (https://changethisfile.com/mcp
-// method tools/list) so discovery works offline.
-const TOOLS = [
-  {
-    name: 'convert_file',
-    title: 'Convert File',
-    description:
-      'Convert a file from one format to another. Pass EITHER a publicly accessible URL (source_url) OR base64-encoded file contents (base64_content + source_format) — exactly one is required. Returns a temporary download URL (valid 1 hour; file deleted within 24 hours).',
-    annotations: {
-      title: 'Convert File',
-      readOnlyHint: false,
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-    },
-    inputSchema: {
-      type: 'object',
-      properties: {
-        source_url: {
-          type: 'string',
-          description: 'Publicly accessible URL of the file to convert (preferred for large files)',
-        },
-        base64_content: {
-          type: 'string',
-          description: 'Base64-encoded file content (for small files; max ~5MB)',
-        },
-        source_format: {
-          type: 'string',
-          description: 'Source format extension (e.g. "docx", "mp4"). Auto-detected from URL if omitted.',
-        },
-        target_format: {
-          type: 'string',
-          description: 'Target format extension (e.g. "json", "mp3", "pdf"). Required.',
-        },
-        filename: {
-          type: 'string',
-          description: 'Optional filename hint for auto-detection (e.g. "document.docx")',
-        },
-      },
-      required: ['target_format'],
-    },
-  },
-  {
-    name: 'list_conversions',
-    title: 'List Supported Conversions',
-    description:
-      'List all supported conversion routes. Optionally filter by source format to see what you can convert FROM a specific format.',
-    annotations: {
-      title: 'List Supported Conversions',
-      readOnlyHint: true,
-      openWorldHint: false,
-    },
-    inputSchema: {
-      type: 'object',
-      properties: {
-        source_format: {
-          type: 'string',
-          description: 'Filter by source format (e.g. "docx" returns all DOCX target options)',
-        },
-      },
-      required: [],
-    },
-  },
-];
-
-async function forwardToolCall(name, args) {
-  let resp;
-  try {
-    resp = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'tools/call',
-        params: { name, arguments: args || {} },
-      }),
-      signal: AbortSignal.timeout(180_000),
-    });
-  } catch (err) {
-    return {
-      isError: true,
-      content: [{ type: 'text', text: `Could not reach the ChangeThisFile conversion service: ${err.message}` }],
-    };
-  }
-
-  if (!resp.ok) {
-    const text = await resp.text().catch(() => '');
-    return {
-      isError: true,
-      content: [{ type: 'text', text: `Conversion service returned HTTP ${resp.status}: ${text.slice(0, 500)}` }],
-    };
-  }
-
-  const body = await resp.json().catch(() => null);
-  if (!body || (body.error == null && body.result == null)) {
-    return {
-      isError: true,
-      content: [{ type: 'text', text: 'Conversion service returned an invalid response' }],
-    };
-  }
-  if (body.error) {
-    return {
-      isError: true,
-      content: [{ type: 'text', text: `${body.error.message}${body.error.data ? `: ${body.error.data}` : ''}` }],
-    };
-  }
-  return body.result;
+function log(...args) {
+  if (DEBUG) process.stderr.write('[ctf-mcp] ' + args.join(' ') + '\n');
 }
 
-const server = new Server(
-  { name: 'changethisfile', version: SERVER_VERSION },
-  { capabilities: { tools: {} } },
-);
+async function sendRpc(body) {
+  const res = await fetch(REMOTE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 204) return null; // notification — no response
+  const text = await res.text();
+  if (!text.trim()) return null;
+  return JSON.parse(text);
+}
 
-server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
+let buf = '';
+let pending = 0;
+let stdinClosed = false;
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  if (!TOOLS.some((t) => t.name === name)) {
-    return {
-      isError: true,
-      content: [{ type: 'text', text: `Unknown tool: ${name}` }],
-    };
+function maybeExit() {
+  if (stdinClosed && pending === 0) process.exit(0);
+}
+
+async function handleLine(line) {
+  let body;
+  try {
+    body = JSON.parse(line);
+  } catch (err) {
+    process.stderr.write('[ctf-mcp] parse error: ' + err.message + '\n');
+    return;
   }
-  return forwardToolCall(name, args);
+
+  log('→', JSON.stringify(body));
+  pending++;
+  try {
+    const resp = await sendRpc(body);
+    if (resp !== null) {
+      const out = JSON.stringify(resp) + '\n';
+      log('←', out.trim());
+      process.stdout.write(out);
+    }
+  } catch (err) {
+    const errResp = {
+      jsonrpc: '2.0',
+      id: body.id ?? null,
+      error: { code: -32603, message: 'Transport error', data: err.message },
+    };
+    process.stdout.write(JSON.stringify(errResp) + '\n');
+  } finally {
+    pending--;
+    maybeExit();
+  }
+}
+
+process.stdin.setEncoding('utf-8');
+process.stdin.on('data', (chunk) => {
+  buf += chunk;
+  let newline;
+  while ((newline = buf.indexOf('\n')) !== -1) {
+    const line = buf.slice(0, newline).trim();
+    buf = buf.slice(newline + 1);
+    if (line) handleLine(line);
+  }
 });
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
+// Don't exit while responses are in flight — the last reply would be dropped.
+process.stdin.on('end', () => {
+  if (buf.trim()) { handleLine(buf.trim()); buf = ''; }
+  stdinClosed = true;
+  maybeExit();
+});
+
+// Flush on SIGTERM
+process.on('SIGTERM', () => process.exit(0));
