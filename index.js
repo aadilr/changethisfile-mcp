@@ -11,34 +11,28 @@
  *     "mcpServers": {
  *       "changethisfile": {
  *         "command": "npx",
- *         "args": ["-y", "changethisfile-mcp"]
+ *         "args": ["-y", "changethisfile-mcp"],
+ *         "env": { "CTF_API_KEY": "ctf_sk_your_key_here" }
  *       }
  *     }
  *   }
  *
  * The shim reads JSON-RPC messages from stdin and forwards them as POST
  * requests to the remote endpoint, writing responses back to stdout.
- * No authentication is required for list_conversions; convert_file uses
- * the server's built-in free-tier key.
+ * Discovery and paid-preview jobs are public. CTF_API_KEY is optional during
+ * compatibility mode and enables shared REST + MCP developer metering.
  */
 
-const REMOTE_URL = process.env.CTF_MCP_URL || 'https://changethisfile.com/mcp';
+import { sendRpc } from './upstream.js';
+
+const REMOTE_URL = process.env.CTF_MCP_URL
+  || process.env.CHANGETHISFILE_MCP_URL
+  || 'https://changethisfile.com/mcp';
+const API_KEY = (process.env.CTF_API_KEY || '').trim();
 const DEBUG = process.env.CTF_MCP_DEBUG === '1';
 
 function log(...args) {
   if (DEBUG) process.stderr.write('[ctf-mcp] ' + args.join(' ') + '\n');
-}
-
-async function sendRpc(body) {
-  const res = await fetch(REMOTE_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (res.status === 204) return null; // notification — no response
-  const text = await res.text();
-  if (!text.trim()) return null;
-  return JSON.parse(text);
 }
 
 let buf = '';
@@ -61,7 +55,7 @@ async function handleLine(line) {
   log('→', JSON.stringify(body));
   pending++;
   try {
-    const resp = await sendRpc(body);
+    const resp = await sendRpc(body, { endpoint: REMOTE_URL, apiKey: API_KEY });
     if (resp !== null) {
       const out = JSON.stringify(resp) + '\n';
       log('←', out.trim());

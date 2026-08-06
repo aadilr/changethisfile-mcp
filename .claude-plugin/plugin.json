@@ -1,6 +1,6 @@
 {
   "name": "changethisfile",
-  "description": "Convert files between 999 conversion routes — PDF↔Word, HEIC→JPG, MP4→MP3, CSV→JSON, EPUB→MOBI and more. Free, no API key. Bundles the hosted ChangeThisFile MCP server and a file-conversion skill with a script fallback for environments without MCP.",
+  "description": "Seven hosted file tools across 1,000+ conversion routes, translation, table extraction, exact-size compression, natural-language routing, and job status. Public discovery and paid previews; verified keys enable shared developer metering during compatibility mode.",
   "version": "1.2.0",
   "author": {
     "name": "Aadil Razvi",

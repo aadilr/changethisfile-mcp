@@ -1,6 +1,6 @@
 {
   "name": "changethisfile",
-  "description": "Free file conversion for Claude — 999 routes across images, video, audio, documents, data, fonts, ebooks, and archives. No API key.",
+  "description": "Seven file tools for Claude — 1,000+ conversion routes, translation, table extraction, exact-size compression, natural-language routing, and job status.",
   "owner": {
     "name": "Aadil Razvi",
     "url": "https://changethisfile.com"
@@ -9,7 +9,7 @@
     {
       "name": "changethisfile",
       "source": "./",
-      "description": "Convert files between 999 conversion routes from Claude — free, no API key. Hosted MCP server + file-conversion skill."
+      "description": "Hosted seven-tool file workflow plus a conversion skill. Public discovery and paid previews; optional verified keys enable shared developer metering during compatibility mode."
     }
   ]
 }
