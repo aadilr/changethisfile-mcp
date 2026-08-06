@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Convert a file via the free ChangeThisFile API (no API key required).
+# Convert a file through ChangeThisFile's anonymous MCP compatibility path.
 #
 # Usage: convert.sh <input-file> <target-format> [output-file]
 # Prints the output file path on success. Non-zero exit + stderr message on failure.
 #
-# Limits: 25MB input, 5 conversions/min per IP. Files deleted server-side within 24h.
+# Limits: 25MB input, 5 conversions/min per IP. Authenticated automation should
+# use the stdio shim or REST API. Files are deleted server-side within 24h.
 set -euo pipefail
 
 ENDPOINT="${CHANGETHISFILE_MCP_URL:-https://changethisfile.com/mcp}"

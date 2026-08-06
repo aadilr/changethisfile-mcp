@@ -1,14 +1,15 @@
 {
   "name": "changethisfile-mcp",
-  "version": "1.0.1",
-  "description": "MCP server for ChangeThisFile \u2014 free file conversion between 690+ formats (image, video, audio, document, data, font, ebook, archive). No auth required.",
+  "version": "1.1.0",
+  "description": "MCP bridge for ChangeThisFile \u2014 seven tools for conversion, translation, table extraction, and exact-size compression.",
   "type": "module",
   "bin": {
     "changethisfile-mcp": "index.js"
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node --test test/*.test.mjs"
   },
   "engines": {
     "node": ">=18"
