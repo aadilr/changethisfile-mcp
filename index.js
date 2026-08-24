@@ -19,8 +19,10 @@
  *
  * The shim reads JSON-RPC messages from stdin and forwards them as POST
  * requests to the remote endpoint, writing responses back to stdout.
- * Discovery and paid-preview jobs are public. CTF_API_KEY is optional during
- * compatibility mode and enables shared REST + MCP developer metering.
+ * Discovery and paid-preview jobs are public. Anonymous convert_file calls
+ * get 25 conversions per month per network; after that the hosted server
+ * asks for a free verified key. CTF_API_KEY forwards that key as a bearer
+ * token and switches you to the per-account REST + MCP developer meter.
  */
 
 import { sendRpc } from './upstream.js';

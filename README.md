@@ -55,7 +55,7 @@ For clients that only speak stdio, this package bridges stdio ↔ the hosted end
 }
 ```
 
-`CTF_API_KEY` is optional during compatibility mode. Get a verified free key from the [ChangeThisFile dashboard](https://changethisfile.com/dashboard); its 25 monthly conversions are shared across MCP and REST.
+`CTF_API_KEY` is optional: without it you get 25 free conversions per month per network; after that `convert_file` asks for a key. Get a verified free key from the [ChangeThisFile dashboard](https://changethisfile.com/dashboard) (or `POST https://changethisfile.com/v1/keys/free` with `{"email":"you@example.com"}` and click the verification email); its 25 monthly conversions are shared across MCP and REST. Paid plans start at $29/month.
 
 Or clone and run directly:
 
