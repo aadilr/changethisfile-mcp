@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.changethisfile/mcp",
   "title": "ChangeThisFile",
-  "description": "Seven file tools covering 1,000+ conversion routes, translation, table extraction, exact-size compression, natural-language routing, and job status. Public discovery and paid previews; optional bearer keys enable shared developer metering during compatibility mode.",
-  "version": "1.1.0",
+  "description": "1,000+ conversion routes plus translate, extract tables, compress. 25 free/month, then a free key.",
+  "version": "1.2.0",
   "websiteUrl": "https://changethisfile.com",
   "repository": {
     "url": "https://github.com/aadilr/changethisfile-mcp",

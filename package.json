@@ -1,6 +1,6 @@
 {
   "name": "changethisfile-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP bridge for ChangeThisFile \u2014 seven tools for conversion, translation, table extraction, and exact-size compression.",
   "type": "module",
   "bin": {
