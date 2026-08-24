@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.changethisfile/mcp",
   "title": "ChangeThisFile",
-  "description": "Convert files between 690+ formats: image, video, audio, documents, ebooks, archives. Free, no auth.",
-  "version": "1.1.0",
+  "description": "Convert files across 1,000+ routes (image, video, audio, documents, ebooks, archives, fonts) and run file jobs: translate with layout preserved, extract tables to Excel, compress to an exact size. 25 free conversions/month, then a free API key.",
+  "version": "1.4.0",
   "websiteUrl": "https://changethisfile.com",
   "repository": {
     "url": "https://github.com/aadilr/changethisfile-mcp",

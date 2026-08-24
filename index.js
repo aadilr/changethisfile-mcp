@@ -2,8 +2,11 @@
 /**
  * ChangeThisFile MCP Server (stdio)
  *
- * Convert files between 690+ formats — image, video, audio, document, data,
- * font, ebook, and archive. Free, no auth required.
+ * Convert files across 1,000+ routes — image, video, audio, document, data,
+ * font, ebook, and archive — plus instruction-driven file jobs (translate,
+ * extract tables, compress). Anonymous callers get 25 conversions/month per
+ * network; set CTF_API_KEY (free verified key, 25/month shared with REST)
+ * to use a per-account allowance.
  *
  * This is a thin stdio client for the hosted ChangeThisFile MCP endpoint
  * (https://changethisfile.com/mcp, streamable HTTP). Tool discovery is
@@ -23,11 +26,23 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 const ENDPOINT = process.env.CHANGETHISFILE_MCP_URL || 'https://changethisfile.com/mcp';
-const SERVER_VERSION = '1.0.0';
+const SERVER_VERSION = '1.4.0';
+// Optional: a verified ChangeThisFile API key (ctf_sk_…). Forwarded as the
+// Authorization header so the hosted server meters your account instead of
+// the anonymous per-network allowance. Get one: POST /v1/keys/free.
+const API_KEY = (process.env.CTF_API_KEY || '').trim();
 
-// Tool definitions mirror the hosted server (https://changethisfile.com/mcp
-// method tools/list) so discovery works offline.
-const TOOLS = [
+function hostedHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (API_KEY) headers.Authorization = `Bearer ${API_KEY}`;
+  return headers;
+}
+
+// Fallback tool definitions mirror the two always-on hosted tools so
+// discovery works offline. At startup we ask the hosted server for its full
+// list (7 tools incl. translate/extract/compress/do_file_job/check_job) and
+// use that when reachable.
+const FALLBACK_TOOLS = [
   {
     name: 'convert_file',
     title: 'Convert File',
@@ -90,12 +105,31 @@ const TOOLS = [
   },
 ];
 
+let TOOLS = FALLBACK_TOOLS;
+
+async function loadHostedTools() {
+  try {
+    const resp = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: hostedHeaders(),
+      body: JSON.stringify({ jsonrpc: '2.0', id: 0, method: 'tools/list', params: {} }),
+      signal: AbortSignal.timeout(8_000),
+    });
+    const body = await resp.json();
+    if (Array.isArray(body?.result?.tools) && body.result.tools.length) {
+      TOOLS = body.result.tools;
+    }
+  } catch {
+    // Offline or blocked: keep the embedded fallback list.
+  }
+}
+
 async function forwardToolCall(name, args) {
   let resp;
   try {
     resp = await fetch(ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: hostedHeaders(),
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: 1,
@@ -153,5 +187,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   return forwardToolCall(name, args);
 });
 
+await loadHostedTools();
 const transport = new StdioServerTransport();
 await server.connect(transport);

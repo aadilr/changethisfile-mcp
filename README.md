@@ -1,6 +1,6 @@
 # ChangeThisFile MCP Server
 
-Convert files between **690+ formats** from any MCP client — image, video, audio, document, data, spreadsheet, font, ebook, and archive. Free, no API key, no signup.
+Convert files across **1,000+ routes** from any MCP client — image, video, audio, document, data, spreadsheet, font, ebook, and archive — plus instruction-driven file jobs (translate with layout preserved, extract tables to Excel, compress to an exact size). 25 free conversions per month per network with no signup; after that a free verified API key (25/month, shared with the REST API).
 
 Powered by [ChangeThisFile.com](https://changethisfile.com). Conversions run on real engines (FFmpeg, LibreOffice, Calibre, 7-Zip, sharp, Ghostscript, fonttools, and more) and return a temporary signed download URL. Uploaded files are auto-deleted within 24 hours.
 
@@ -113,7 +113,7 @@ Use `list_conversions` for the full route table.
 
 ## Privacy & limits
 
-- No authentication or account required.
+- No account needed for the first 25 conversions each month (per network). After that `convert_file` asks for a free verified API key — get one with `POST https://changethisfile.com/v1/keys/free` (`{"email":"you@example.com"}`), click the verification email, copy the key from https://changethisfile.com/dashboard, and set it as `CTF_API_KEY` (stdio bridge) or `Authorization: Bearer ctf_sk_…` (direct HTTP). Paid API plans start at $29/month: https://changethisfile.com/pricing
 - Files are processed server-side and **auto-deleted within 24 hours**; download URLs expire after 1 hour.
 - Per-IP rate limiting applies. For higher volume, see the [authenticated API](https://changethisfile.com/api).
 
