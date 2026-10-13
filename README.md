@@ -2,7 +2,7 @@
 
 Use ChangeThisFile's **seven file tools** from any MCP client: conversion across 1,000+ supported routes, document translation, table extraction, exact-size compression, natural-language routing, and job status checks.
 
-Powered by [ChangeThisFile.com](https://changethisfile.com). Discovery and paid-preview jobs are public. General `convert_file` accepts a verified developer key now and shares its quota with REST API usage. Anonymous conversion remains available during the connector compatibility window; authentication will not be enforced before August 27, 2026, and only after connector support is verified.
+Powered by [ChangeThisFile.com](https://changethisfile.com). Discovery and paid-preview jobs are public. General `convert_file` works without a key for 25 conversions per month per network; after that it needs a free verified developer key (25 conversions/month, shared with the REST API), and paid API plans raise the limit.
 
 ## Tools
 
