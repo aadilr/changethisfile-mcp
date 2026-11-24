@@ -3,8 +3,17 @@
   "name": "com.changethisfile/mcp",
   "title": "ChangeThisFile",
   "description": "1,000+ conversion routes plus translate, extract tables, compress. 25 free/month, then a free key.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "websiteUrl": "https://changethisfile.com",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/aadilr/changethisfile-mcp/master/logo-400.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "400x400"
+      ]
+    }
+  ],
   "repository": {
     "url": "https://github.com/aadilr/changethisfile-mcp",
     "source": "github"
